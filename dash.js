@@ -53,8 +53,9 @@ function ACT(event) {
     textarea.value = DESCRY[op]['PLAIN'](textarea.value, encoderDropdown.value.split('-')[1]);
 
     if (op === 'NO') {
-        navigator.clipboard.writeText(textarea.value);
-        textarea.value = 'Copied to your clipboard.';
+        textarea.select();
+        document.execCommand('copy');
+        textarea.value = 'Copied to your clipboard.\n A copy has been placed between these brackets [' + textarea.value + ']';
     }
 }
 
