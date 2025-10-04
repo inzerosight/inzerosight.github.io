@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
@@ -29,7 +29,37 @@
 <p id="notice">
     notice: some platforms restrict Ø width characters.
 </p>
-<script src="dash.js"></script>
+<script type="module">
+    import zwus from 'https://cdn.jsdelivr.net/npm/zwus';
+
+    const textarea = document.getElementById('textarea');
+    const encoderDropdown = document.getElementById('encoder');
+    const cipherDropdown = document.getElementById('cipher');
+    const DESCRY = {
+        NO: { PLAIN: (ptStr, base) => zwus.encodeString(ptStr, base) },
+        YES: { PLAIN: (ptStr, base) => zwus.decodeToString(ptStr, base) }
+    };
+
+    ['encodeButton', 'decodeButton'].forEach(id =>
+        document.getElementById(id).addEventListener('click', event => {
+            if (!textarea.value) {
+                textarea.value = 'The text box is empty.';
+                return;
+            }
+            const op = event.target.id === 'encodeButton' ? 'NO' : 'YES';
+            textarea.value = DESCRY[op][cipherDropdown.value](
+                textarea.value,
+                encoderDropdown.value.split('-')[1]
+            );
+
+            if (op === 'NO') {
+                textarea.select();
+                document.execCommand('copy');
+                textarea.value = `Copied to clipboard. [${textarea.value}]`;
+            }
+        })
+    );
+</script>
 </body>
 <style>
     html, body, div, span, applet, object, iframe,
